@@ -1,0 +1,53 @@
+{ "$schema" : "http://json-schema.org/draft-04/schema#",
+  "title" : "Appropriations history validation schema",
+  "description" : "This is a JSON schema for validating appropriations history records, intended to make structured use of those records easier by ensuring consistent data structure.",
+  "default" : null,
+  
+  "definitions" : {
+    "bill" : {
+      "type" : "object",
+      "properties" : {
+        "number" : { "type" : "string", /* "pattern" : "" */ },
+        "title" : { "type" : "string" },
+        "link" : { "type" : "string", "format" : "uri" }
+      }
+    }
+    "voteCount" : {
+      "type" : "object", 
+      "properties" : {
+        "yeas" : { "type" : "number", "min" : 0, 
+                   "multipleOf" : 1.0, "default" : 0 },
+        "nays" : { "type" : "number", "min" : 0, 
+                   "multipleOf" : 1.0, "default" : 0 },
+        "present" : { "type" : "number", "min" : 0, 
+                      "multipleOf" : 1.0, "default" : 0 },
+        "noVote" : { "type" : "number", "min" : 0, 
+                     "multipleOf" : 1.0, "default" : 0 }
+      }
+    },
+    "vote" : {
+      "type" : "object",
+      "properties" : {
+        "year" : { "type" : "number", "min" : 1767, "multipleOf" : 1.0 },
+        "number" : { "type" : "number", "multipleOf" : 1.0 },
+        "bill" : { "$ref" : "#/definitions/bill" },
+        "datetime" : { "type" : "string", "format" : "datetime" },
+        "question" : { "type" : "string" },
+        "voteType" : {
+          "type" : "string",
+          "enum" : ["unanimous consent", "voice vote", "roll call vote"]
+        },
+        "passed" : { "type" : "boolean" },
+        "counts" : {
+          "type" : "object",
+          "properties" : {
+            "republican" : { "$ref" : "#/definitions/voteCount" },
+            "democratic" : { "$ref" : "#/definitions/voteCount" },
+            "independent" : { "$ref" : "#/definitions/voteCount" },
+            "totals" : { "$ref" : "#/definitions/voteCount" }
+          }
+        }
+      }
+    }
+  }
+}
